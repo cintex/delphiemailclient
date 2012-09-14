@@ -47,10 +47,8 @@ var
    answer: string;
 begin
      ClientConnection := TPopClient.create(EditPOP.text, StrToIntDef(EditPort.text,110));
-     repeat
-     ClientConnection.receive;
-     MemoOutput.Lines.Add(ClientConnection.authenticate(EditUsername.text, EditPassword.text));
-     until ClientConnection.getConnectionStatus = authentificated;
+     
+     ClientConnection.authenticate(EditUsername.text, EditPassword.text);
 
 end;
 

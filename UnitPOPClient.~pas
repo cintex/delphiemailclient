@@ -8,7 +8,6 @@ uses
   StdCtrls, mClient;
 
 type
-   TConnectionStatus = (Disconnect, NeedUsername, NeedPassword, Authentificated, Update);
    TPopClient = class(TClient)
        private
          answer: string;
@@ -17,10 +16,9 @@ type
        public
          constructor create(pServerIP:string; pServerPort:integer);
          function authenticate(username, password :string): string;
-         function getConnectionStatus: TConnectionStatus;
 
 end;
-
+TConnectionStatus = (Disconnect, NeedUsername, NeedPassword, Authentificated, Update);
 
 var
    ConnectionStatus: TConnectionStatus;
@@ -45,7 +43,6 @@ function TPopClient.authenticate(username, password :string):String;
 var
    LogString: String;
 begin
-        logString := '';
           if NewAnswer = true then
           begin
                NewAnswer := false;
@@ -56,7 +53,7 @@ begin
                          begin
                               self.send('USER '+username);
                               ConnectionStatus := NeedPassword;
-                              logString := answer;
+                              logString := logString + #13 + #10 + answer;
                          end;
                     end;
                     NeedPassword:
@@ -65,7 +62,7 @@ begin
                          begin
                               self.send('PASS '+password);
                               ConnectionStatus := authentificated;
-                              logString := answer;
+                              logString := logString + #13 + #10 + answer;
                          end;
                     end;
                     authentificated:
@@ -73,17 +70,13 @@ begin
                          if copy(answer,0,3) = '+OK' then
                          begin
                               logString := logString + #13 + #10 + answer;
-                              logString := answer;
+                              result := logString;
                          end;
                     end;
                end;
           end;
-          result := logString;
-end;
 
-function TPopClient.getConnectionStatus: TConnectionStatus;
-begin
-        result := ConnectionStatus;
+
 end;
 
 end.
